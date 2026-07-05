@@ -4,6 +4,7 @@ from langchain_core.messages import HumanMessage, ToolMessage
 from langgraph.constants import END
 from langgraph.graph import START, StateGraph
 from langgraph.prebuilt import ToolNode
+from langsmith import traceable
 
 from app.core.prompts import (
     SYSTEM_PROMPT,
@@ -93,6 +94,7 @@ def _current_tool_observations(messages) -> list[str]:
 
 
 def _create_deliberative_nodes(plan_llm, llm_with_tools, max_tool_rounds_per_step):
+    @traceable(run_type="chain", name="parse_plan")
     def planner(state) -> dict:
         user_msg = state["messages"][-1]
         response = plan_llm.invoke([PLANNER_PROMPT, user_msg])
