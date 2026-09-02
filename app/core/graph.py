@@ -20,7 +20,7 @@ def build_reactive_graph(llm, tools, max_steps=10):
     llm_with_tools = llm.bind_tools(tools)
 
     def call_model(state: AgentState) -> dict:
-        response = llm_with_tools.invoke(state["messages"])
+        response = llm_with_tools.invoke([SYSTEM_PROMPT] + state["messages"])
         step = state.get("step_count", 0) + 1
         print(f"\n--- Step {step} ---")
         if hasattr(response, "tool_calls") and response.tool_calls:

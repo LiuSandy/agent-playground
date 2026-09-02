@@ -6,6 +6,7 @@ from langgraph.graph.message import add_messages
 
 class AgentState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
+    step_count: NotRequired[int]
 
 
 class DeliberativeState(TypedDict):

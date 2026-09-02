@@ -20,9 +20,18 @@ app/
 │   ├── prompts.py      # System Prompt
 │   ├── state.py        # AgentState 定义
 │   └── tools.py        # 工具注册
+├── evaluation/
+│   ├── target.py       # LangSmith Dataset 到 Agent State 的适配层
+│   └── evaluators.py   # 答案、路由和工具评估器
 └── tools/
     ├── calculator.py   # 计算器工具
     └── search.py       # 搜索工具示例
+
+scripts/
+├── create_dataset.py   # 创建版本化 LangSmith Dataset
+└── run_evaluation.py   # 运行 Experiment 并检查质量门禁
+
+tests/                  # 不依赖真实模型 API 的确定性单元测试
 ```
 
 ## 环境要求
@@ -43,6 +52,10 @@ uv sync
 DEEPSEEK_MODEL=deepseek-v4-pro
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_API_KEY=your_api_key_here
+
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your_langsmith_api_key_here
+LANGSMITH_PROJECT=agent-playground
 ```
 
 ## 运行示例
@@ -51,6 +64,26 @@ DEEPSEEK_API_KEY=your_api_key_here
 
 ```bash
 uv run python main.py
+```
+
+## LangSmith 自动化评估
+
+首次运行前，在 LangSmith 中创建回归测试数据集：
+
+```bash
+uv run python -m scripts.create_dataset
+```
+
+运行 Hybrid Agent 的答案、路由和工具评估，并检查质量阈值：
+
+```bash
+uv run python -m scripts.run_evaluation
+```
+
+本地单元测试不会调用真实模型或 LangSmith API：
+
+```bash
+uv run pytest
 ```
 
 
